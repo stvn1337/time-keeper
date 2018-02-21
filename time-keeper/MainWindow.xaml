@@ -10,15 +10,16 @@
     <StackPanel>
         <DockPanel LastChildFill="False" Margin="10">
             <Label>Current Time : </Label>
-            <TextBox Name="currentTimeBox" Width="200" Margin="17,0,0,0"></TextBox>
+            <TextBox Name="currentTimeBox" Width="200" Margin="27,0,0,0"></TextBox>
+            <Label> hours</Label>
         </DockPanel>
         <DockPanel LastChildFill="False" Margin="10">
             <Label>Hourly Wage :  </Label>
-            <TextBox Name="hourlyWageBox" Width="100" Margin="17,0,0,0"></TextBox>
+            <TextBox Name="hourlyWageBox" Width="100" Margin="27,0,0,0"></TextBox>
             <Label>/hr</Label>
         </DockPanel>
         <DockPanel LastChildFill="False" Margin="10">
-            <Label>Current Amount : </Label>
+            <Label>Current Amount :</Label>
             <TextBox Name="amountBox" Width="200"></TextBox>
         </DockPanel>
         <Button Click="ButtonBase_OnClick">Start / Stop</Button>
