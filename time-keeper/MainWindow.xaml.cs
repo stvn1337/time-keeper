@@ -104,15 +104,19 @@ namespace time_keeper
             var output = new FileStream("Receipt.pdf", FileMode.Create);
             var writer = PdfWriter.GetInstance(document, output);
             document.Open();
-            var welcomeParagraph = new iTextSharp.text.Paragraph("TimeKeeper Receipt");
-            welcomeParagraph.Font = new Font(Font.FontFamily.HELVETICA, 24);
+            BaseFont bf1 = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            var welcomeParagraph = new iTextSharp.text.Paragraph("TimeKeeper Receipt")
+            {
+                Font = new iTextSharp.text.Font(bf1 ,24)
+            };
+
             document.Add(welcomeParagraph);
             Application.Current.Dispatcher.Invoke(()=>
             {
-                document.Add( new iTextSharp.text.Paragraph( "Amount of time = " + ctime.Text));
-                document.Add(new iTextSharp.text.Paragraph("Pay Rate  = " + cwage.Text));
-                document.Add(new iTextSharp.text.Paragraph("Total Amount  = " + camount.Text));
-
+                 iTextSharp.text.Font font = new iTextSharp.text.Font(bf1, 10, iTextSharp.text.Font.NORMAL);
+                document.Add(new iTextSharp.text.Paragraph("Amount of time = " + ctime.Text, font));
+                document.Add(new iTextSharp.text.Paragraph("Pay Rate  = " + cwage.Text, font));
+                document.Add(new iTextSharp.text.Paragraph("Total Amount  = " + camount.Text, font));
             });
             document.Close();
             System.Diagnostics.Process.Start("Receipt.pdf");
