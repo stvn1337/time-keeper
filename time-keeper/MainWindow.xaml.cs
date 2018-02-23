@@ -56,6 +56,7 @@ namespace time_keeper
         {
             
             Application.Current.Dispatcher.Invoke(() => { getTextLen = cwage.Text.Length > 0; });
+
             if (getTextLen){
                 runbool = !runbool;
                 if (runbool)
@@ -139,16 +140,6 @@ namespace time_keeper
                     ctime.Text = 0.ToString();
                     camount.Text = 0.ToString();
                 });
-        }
-
-        // Method to add single cell to the body
-
-        private static void AddCellToBody(PdfPTable tableLayout, string cellText)
-
-        {
-
-            tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA))) { HorizontalAlignment = Element.ALIGN_CENTER, Padding = 5});
-
         }
 
     }
