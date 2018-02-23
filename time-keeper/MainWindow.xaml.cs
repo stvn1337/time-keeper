@@ -80,5 +80,15 @@ namespace time_keeper
             }
 
         }
+
+        public void PrintBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+
+        }
+
+        private void ResetBtn_OnClickBtn_OnClick(object sender, RoutedEventArgs e)
+        {
+            timer1 = DateTime.Now;
+        }
     }
 }
