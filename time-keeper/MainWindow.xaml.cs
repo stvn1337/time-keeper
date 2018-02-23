@@ -34,7 +34,9 @@ namespace time_keeper
             cwage = this.hourlyWageBox;
             camount = this.amountBox;
             image = this.Image;
-            
+            ctime.IsReadOnly = true;
+            camount.IsReadOnly = true;
+
 
         }
 
@@ -57,16 +59,14 @@ namespace time_keeper
                     timer.Elapsed += OnTimedEvent;
                     timer.Enabled = true;
                     image.Source =
-                        new BitmapImage(new Uri(
-                            @"pack://application:,,,/time-keeper;component/resources/Button-Turn-On-icon.png"));
+                        new BitmapImage(new Uri(@"pack://application:,,,/time-keeper;component/resources/Button-Turn-On-icon.png"));
 
                 }
                 else
                 {
                     timer.Enabled = false;
                     image.Source =
-                        new BitmapImage(new Uri(
-                            @"pack://application:,,,/time-keeper;component/resources/Button-Turn-Off-icon.png"));
+                        new BitmapImage(new Uri(@"pack://application:,,,/time-keeper;component/resources/Button-Turn-Off-icon.png"));
                 }
             }
 
