@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Mime;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -16,6 +17,11 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using DateTime = System.DateTime;
+using iTextSharp;
+using iTextSharp.text;
+using iTextSharp.text.pdf;
+using System.Diagnostics;
+using System.IO;
 
 namespace time_keeper
 {
@@ -31,6 +37,8 @@ namespace time_keeper
         private static TextBox cwage;
         private static TextBox camount;
         private static bool runbool = false;
+        private static System.Windows.Controls.Image image;
+        private static bool getTextLen;
 
         
         public MainWindow()
@@ -39,23 +47,45 @@ namespace time_keeper
             ctime = this.currentTimeBox;
             cwage = this.hourlyWageBox;
             camount = this.amountBox;
+            image = this.Image;
+            
 
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e) //On start stop clicked...
         {
-            runbool = !runbool;
-            if (runbool)
-            {
-                timer1 = DateTime.Now;
-                timer2 = DateTime.Now;
-                timer = new System.Timers.Timer(1000);
-                timer.Elapsed += OnTimedEvent;
-                timer.Enabled = true;
+            
+            Application.Current.Dispatcher.Invoke(() => { getTextLen = cwage.Text.Length > 0; });
+            if (getTextLen){
+                runbool = !runbool;
+                if (runbool)
+                {
+                    if (timer1 == DateTime.MinValue)
+                    {
+                        timer1 = DateTime.Now;
+                    }
+
+                    timer2 = DateTime.Now;
+                    timer = new System.Timers.Timer(1000);
+                    timer.Elapsed += OnTimedEvent;
+                    timer.Enabled = true;
+                    image.Source =
+                        new BitmapImage(new Uri(
+                            @"pack://application:,,,/time-keeper;component/resources/Button-Turn-On-icon.png"));
+
+                }
+                else
+                {
+                    timer.Enabled = false;
+                    image.Source =
+                        new BitmapImage(new Uri(
+                            @"pack://application:,,,/time-keeper;component/resources/Button-Turn-Off-icon.png"));
+                }
             }
+
             else
             {
-                timer.Enabled = false;
+                MessageBox.Show("Please enter a pay rate..");
             }
 
             //string.Format("{0:#.00}", Convert.ToDecimal(((timer * Double.Parse(payPerHr.Text))) / 100));
@@ -83,12 +113,43 @@ namespace time_keeper
 
         public void PrintBtn_OnClick(object sender, RoutedEventArgs e)
         {
+            var document = new Document(PageSize.A4, 50, 50, 25, 25);
+            var output = new FileStream("Receipt.pdf", FileMode.Create);
+            var writer = PdfWriter.GetInstance(document, output);
+            document.Open();
+            var welcomeParagraph = new iTextSharp.text.Paragraph("TimeKeeper Receipt");
+            welcomeParagraph.Font = new Font(Font.FontFamily.HELVETICA, 24);
+            document.Add(welcomeParagraph);
+            Application.Current.Dispatcher.Invoke(()=>
+            {
+                document.Add( new iTextSharp.text.Paragraph( "Amount of time = " + ctime.Text));
+                document.Add(new iTextSharp.text.Paragraph("Pay Rate  = " + cwage.Text));
+                document.Add(new iTextSharp.text.Paragraph("Total Amount  = " + camount.Text));
 
+            });
+            document.Close();
+            System.Diagnostics.Process.Start("Receipt.pdf");
         }
 
         private void ResetBtn_OnClickBtn_OnClick(object sender, RoutedEventArgs e)
         {
             timer1 = DateTime.Now;
+            Application.Current.Dispatcher.Invoke(() =>
+                {
+                    ctime.Text = 0.ToString();
+                    camount.Text = 0.ToString();
+                });
         }
+
+        // Method to add single cell to the body
+
+        private static void AddCellToBody(PdfPTable tableLayout, string cellText)
+
+        {
+
+            tableLayout.AddCell(new PdfPCell(new Phrase(cellText, new Font(Font.FontFamily.HELVETICA))) { HorizontalAlignment = Element.ALIGN_CENTER, Padding = 5});
+
+        }
+
     }
 }
