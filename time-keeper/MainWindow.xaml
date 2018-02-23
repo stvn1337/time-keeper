@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:time_keeper"
         mc:Ignorable="d"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="Time Keeper v1.0" Height="208.667" Width="629.333">
+        Title="Time Keeper v1.2" Height="208.667" Width="629.333">
     <StackPanel>
         <DockPanel LastChildFill="False" Margin="10">
             <Label>Current Time : </Label>
