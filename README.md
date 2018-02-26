@@ -1,4 +1,3 @@
-# time-keeper
 <h1> Time-Keeper</h1>
 Watch your money add up in real time, using your hourly wage.
 Then print a simple PDF Receipt.
