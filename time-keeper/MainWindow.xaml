@@ -16,16 +16,19 @@
             <Button Name="printBtn" Click="PrintBtn_OnClick">Print</Button>
         </DockPanel>
         <DockPanel LastChildFill="False" Margin="10">
-            <Label>Hourly Wage :  </Label>
+            <Label>Hourly Wage :</Label>
             <TextBox Name="hourlyWageBox" Width="100" Margin="27,0,0,0"></TextBox>
             <Label>/hr</Label>
-            <Label Margin="190,0,0,0">Reset timer:</Label>
+            <Label>Currency :</Label>
+            <ComboBox Name="currencyCmb" SelectionChanged="CurrencyCmb_SelectionChanged"></ComboBox>
+            <Label Margin="60,0,0,0">Reset timer:</Label>
             <Button Name="resetBtn" Click="ResetBtn_OnClickBtn_OnClick" Margin="45,0,0,0">Reset</Button>
         </DockPanel>
         <DockPanel LastChildFill="False" Margin="10">
             <Label>Current Amount :</Label>
             <TextBox Name="amountBox" Margin="10,0,0,0" Width="200"></TextBox>
-            <Label Margin="118,0,0,0" >Current Status:</Label>
+            <Label Name="amountCurrencyLbl"></Label>
+            <Label Margin="85,0,0,0" >Current Status:</Label>
             <Image Name="Image" Margin="23,0,0,0"  Height="30" Width="50" Source="resources/Button-Turn-Off-icon.png"/>
         </DockPanel>
         <Button Click="ButtonBase_OnClick" HorizontalAlignment="Left" Width="321">Start / Stop</Button>
