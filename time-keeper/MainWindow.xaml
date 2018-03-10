@@ -6,12 +6,12 @@
         xmlns:local="clr-namespace:time_keeper"
         mc:Ignorable="d"
         xmlns:controls="http://metro.mahapps.com/winfx/xaml/controls"
-        Title="Time Keeper v1.4" Height="208.667" Width="629.333" ResizeMode="CanMinimize"  Icon="resources/Clock.png">
-    <StackPanel>
+        Title="Time Keeper v1.4" Height="315.906" Width="629.333" ResizeMode="CanMinimize"  Icon="resources/Clock.png">
+    <StackPanel Margin="0,0,-0.5,1.5">
         <DockPanel LastChildFill="False" Margin="10">
-            <Label>Current Time : </Label>
+            <Label>Current Time :</Label>
             <TextBox Name="currentTimeBox" Width="200" Margin="27,0,0,0"></TextBox>
-            <Label> hours</Label>
+            <Label>hours</Label>
             <Label Margin="75,0,0,0">Print a Time Receipt:</Label>
             <Button Name="printBtn" Click="PrintBtn_OnClick">Print</Button>
         </DockPanel>
@@ -31,7 +31,14 @@
             <Label Margin="85,0,0,0" >Current Status:</Label>
             <Image Name="Image" Margin="23,0,0,0"  Height="30" Width="50" Source="resources/Button-Turn-Off-icon.png"/>
         </DockPanel>
-        <Button Click="ButtonBase_OnClick" HorizontalAlignment="Left" Width="321">Start / Stop</Button>
-        <Image Height="100"/>
+        <DockPanel Height="28" LastChildFill="False" Margin="10">
+            <Label Content="Payee Name :"/>
+            <TextBox x:Name="payeeNameBox"  Margin="30,0,0,0" Width="200"/>
+        </DockPanel>
+        <DockPanel Height="29" LastChildFill="False" Margin="10">
+            <Label Content="Payer Name:"/>
+            <TextBox x:Name="payerNameBox"  Margin="35,0,0,0" Width="200"/>
+        </DockPanel>
+        <Button Click="ButtonBase_OnClick" HorizontalAlignment="Center" Width="320" Content="Start / Stop" VerticalAlignment="Top" Margin="152,0"/>
     </StackPanel>
 </controls:MetroWindow>

@@ -23,21 +23,30 @@ namespace time_keeper
         private static TextBox ctime;
         private static TextBox cwage;
         private static TextBox camount;
+        private static TextBox payeeName;
+        private static TextBox payerName;
         private static bool runbool;
         private static System.Windows.Controls.Image image;
         private static bool getTextLen;
+        BaseFont bf1 = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+        Font font;
 
         public string SelectedCurrency { get { return currencyCmb.SelectedValue.ToString(); } }
 
         public MainWindow()
         {
+            font = new Font(bf1, 10, Font.NORMAL);
             InitializeComponent();
             ctime = this.currentTimeBox;
             cwage = this.hourlyWageBox;
             camount = this.amountBox;
             image = this.Image;
+            payeeName = this.payeeNameBox;
+            payerName = this.payerNameBox;
             ctime.IsReadOnly = true;
             camount.IsReadOnly = true;
+
+            payeeName.Text = Environment.UserName;
 
             foreach (var currency in Enum.GetValues(typeof(Currency)))
                 currencyCmb.Items.Add(currency);
@@ -94,25 +103,61 @@ namespace time_keeper
             }
         }
 
+        private PdfPTable CreateTable()
+        {
+            var table = new PdfPTable(3);
+            table.AddCell(CreateCellPhrase("Amount of Time"));
+            table.AddCell(CreateCellPhrase("Pay Rate"));
+            table.AddCell(CreateCellPhrase("Total Amount"));
+            table.AddCell(CreateCellPhrase(ctime.Text));
+            table.AddCell(CreateCellPhrase($"{cwage.Text} {SelectedCurrency} / h"));
+            table.AddCell(CreateCellPhrase($"{camount.Text} {SelectedCurrency}"));
+
+            return table;
+        }
+
+        private PdfPCell CreateCellPhrase(string text)
+        {
+            var cell = new PdfPCell();
+            cell.HorizontalAlignment = 1;
+            cell.Phrase = new Phrase(text, font);
+            return cell;
+
+        }
+
+
+
         public void PrintBtn_OnClick(object sender, RoutedEventArgs e)
         {
+
             var document = new Document(PageSize.A4, 50, 50, 25, 25);
             var output = new FileStream("Receipt.pdf", FileMode.Create);
             var writer = PdfWriter.GetInstance(document, output);
             document.Open();
-            BaseFont bf1 = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            var welcomeParagraph = new iTextSharp.text.Paragraph("TimeKeeper Receipt")
+
+            var welcomeParagraph = new Paragraph("TimeKeeper Receipt")
             {
-                Font = new iTextSharp.text.Font(bf1, 24)
+                Font = new Font(bf1, 48,2),
+                Alignment = 1,
+                
             };
 
+
             document.Add(welcomeParagraph);
+            document.Add(new Paragraph(Environment.NewLine));
+            document.Add(new Paragraph(Environment.NewLine));
             Application.Current.Dispatcher.Invoke(() =>
             {
-                iTextSharp.text.Font font = new iTextSharp.text.Font(bf1, 10, iTextSharp.text.Font.NORMAL);
-                document.Add(new iTextSharp.text.Paragraph($"Amount of time = {ctime.Text} hours", font));
-                document.Add(new iTextSharp.text.Paragraph($"Pay Rate  = {cwage.Text} {SelectedCurrency} / hour", font));
-                document.Add(new iTextSharp.text.Paragraph($"Total Amount  {camount.Text} {SelectedCurrency}", font));
+                document.Add(CreateTable());
+
+                document.Add(new Paragraph(Environment.NewLine));
+                document.Add(new Paragraph($"Payer : {payerName.Text}", font) { Alignment = 1 });
+                document.Add(new Paragraph($"Payee : {payeeName.Text}", font) { Alignment = 1 });
+                document.Add(new Paragraph(Environment.NewLine));
+                document.Add(new Paragraph(Environment.NewLine));
+                document.Add(new Paragraph(Environment.NewLine));
+                document.Add(new Paragraph(Environment.NewLine));
+                document.Add(new Paragraph($"Printed on {DateTime.Now}", font) { Alignment = 1 });
             });
             document.Close();
             System.Diagnostics.Process.Start("Receipt.pdf");
