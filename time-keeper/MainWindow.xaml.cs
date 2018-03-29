@@ -1,6 +1,5 @@
 ﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
-using MahApps.Metro.Controls;
 using System;
 using System.IO;
 using System.Timers;
@@ -15,29 +14,29 @@ namespace time_keeper
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow
+    public partial class MainWindow 
     {
-        private static DateTime timer1;
-        private static DateTime timer2;
-        private static Timer timer;
-        private static TextBox ctime;
-        private static TextBox cwage;
-        private static TextBox camount;
-        private static bool runbool;
-        private static System.Windows.Controls.Image image;
-        private static bool getTextLen;
+        private static DateTime _timer1;
+        private static DateTime _timer2;
+        private static Timer _timer;
+        private static TextBox _ctime;
+        private static TextBox _cwage;
+        private static TextBox _camount;
+        private static bool _runbool;
+        private static System.Windows.Controls.Image _image;
+        private static bool _getTextLen;
 
         public string SelectedCurrency { get { return currencyCmb.SelectedValue.ToString(); } }
 
         public MainWindow()
         {
             InitializeComponent();
-            ctime = this.currentTimeBox;
-            cwage = this.hourlyWageBox;
-            camount = this.amountBox;
-            image = this.Image;
-            ctime.IsReadOnly = true;
-            camount.IsReadOnly = true;
+            _ctime = currentTimeBox;
+            _cwage = hourlyWageBox;
+            _camount = amountBox;
+            _image = Image;
+            _ctime.IsReadOnly = true;
+            _camount.IsReadOnly = true;
 
             foreach (var currency in Enum.GetValues(typeof(Currency)))
                 currencyCmb.Items.Add(currency);
@@ -46,26 +45,26 @@ namespace time_keeper
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e) //On start stop clicked...
         {
-            Application.Current.Dispatcher.Invoke(() => getTextLen = cwage.Text.Length > 0);
+            Application.Current.Dispatcher.Invoke(() => _getTextLen = _cwage.Text.Length > 0);
 
-            if (getTextLen)
+            if (_getTextLen)
             {
-                runbool = !runbool;
-                if (runbool)
+                _runbool = !_runbool;
+                if (_runbool)
                 {
-                    if (timer1 == DateTime.MinValue)
-                        timer1 = DateTime.Now;
-                    timer2 = DateTime.Now;
-                    timer = new System.Timers.Timer(1000);
-                    timer.Elapsed += OnTimedEvent;
-                    timer.Enabled = true;
-                    image.Source =
+                    if (_timer1 == DateTime.MinValue)
+                        _timer1 = DateTime.Now;
+                    _timer2 = DateTime.Now;
+                    _timer = new Timer(1000);
+                    _timer.Elapsed += OnTimedEvent;
+                    _timer.Enabled = true;
+                    _image.Source =
                         new BitmapImage(new Uri("pack://application:,,,/time-keeper;component/resources/Button-Turn-On-icon.png"));
                 }
                 else
                 {
-                    timer.Enabled = false;
-                    image.Source =
+                    _timer.Enabled = false;
+                    _image.Source =
                         new BitmapImage(new Uri("pack://application:,,,/time-keeper;component/resources/Button-Turn-Off-icon.png"));
                 }
             }
@@ -77,19 +76,19 @@ namespace time_keeper
 
         private static void OnTimedEvent(object source, ElapsedEventArgs e)
         {
-            timer2 = DateTime.Now;
+            _timer2 = DateTime.Now;
             double wageHolder = 0;
-            Application.Current.Dispatcher.Invoke(() => double.TryParse(cwage.Text, out wageHolder));
-            if (wageHolder != 0)
+            Application.Current.Dispatcher.Invoke(() => double.TryParse(_cwage.Text, out wageHolder));
+            if (Math.Abs(wageHolder) > 0)
             {
-                double amountHrs = (timer2 - timer1).TotalHours;
+                double amountHrs = (_timer2 - _timer1).TotalHours;
                 string holder = amountHrs.ToString("0.000000");
                 string holder2 = (wageHolder * amountHrs).ToString("0.00");
                 Console.WriteLine(holder);
                 Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ctime.Text = holder;
-                    camount.Text = holder2;
+                    _ctime.Text = holder;
+                    _camount.Text = holder2;
                 });
             }
         }
@@ -98,21 +97,21 @@ namespace time_keeper
         {
             var document = new Document(PageSize.A4, 50, 50, 25, 25);
             var output = new FileStream("Receipt.pdf", FileMode.Create);
-            var writer = PdfWriter.GetInstance(document, output);
+            PdfWriter.GetInstance(document, output);
             document.Open();
-            BaseFont bf1 = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
-            var welcomeParagraph = new iTextSharp.text.Paragraph("TimeKeeper Receipt")
+            var bf1 = BaseFont.CreateFont(BaseFont.HELVETICA, BaseFont.CP1252, BaseFont.NOT_EMBEDDED);
+            var welcomeParagraph = new Paragraph("TimeKeeper Receipt")
             {
-                Font = new iTextSharp.text.Font(bf1, 24)
+                Font = new Font(bf1, 24)
             };
 
             document.Add(welcomeParagraph);
             Application.Current.Dispatcher.Invoke(() =>
             {
-                iTextSharp.text.Font font = new iTextSharp.text.Font(bf1, 10, iTextSharp.text.Font.NORMAL);
-                document.Add(new iTextSharp.text.Paragraph($"Amount of time = {ctime.Text} hours", font));
-                document.Add(new iTextSharp.text.Paragraph($"Pay Rate  = {cwage.Text} {SelectedCurrency} / hour", font));
-                document.Add(new iTextSharp.text.Paragraph($"Total Amount  {camount.Text} {SelectedCurrency}", font));
+                Font font = new Font(bf1, 10, Font.NORMAL);
+                document.Add(new Paragraph($"Amount of time = {_ctime.Text} hours", font));
+                document.Add(new Paragraph($"Pay Rate  = {_cwage.Text} {SelectedCurrency} / hour", font));
+                document.Add(new Paragraph($"Total Amount  {_camount.Text} {SelectedCurrency}", font));
             });
             document.Close();
             System.Diagnostics.Process.Start("Receipt.pdf");
@@ -120,17 +119,19 @@ namespace time_keeper
 
         private void ResetBtn_OnClickBtn_OnClick(object sender, RoutedEventArgs e)
         {
-            timer1 = DateTime.Now;
+            _timer1 = DateTime.Now;
             Application.Current.Dispatcher.Invoke(() =>
                 {
-                    ctime.Text = 0.ToString();
-                    camount.Text = 0.ToString();
+                    _ctime.Text = 0.ToString();
+                    _camount.Text = 0.ToString();
                 });
         }
 
         /// <summary>
         /// When currency item has changed
         /// </summary>
+        /// <param name="sender">Currency Cmb Selection Box</param>
+        /// <param name="e">The current currency selection</param>
         private void CurrencyCmb_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             amountCurrencyLbl.Content = SelectedCurrency;
